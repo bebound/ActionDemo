@@ -1,0 +1,66 @@
+name: az is slow on first run  
+  
+on:  
+  workflow_dispatch:  
+  
+jobs:  
+  test-windows:  
+    name: Test Windows ${{ matrix.run }}  
+    runs-on: windows-latest  
+    strategy:  
+      matrix:  
+        run: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]  
+    outputs:  
+      elapsed: ${{ steps.measure.outputs.elapsed }}  
+    steps:  
+      - name: Measure first run of az --help  
+        id: measure  
+        shell: pwsh  
+        run: |  
+          $sw = [System.Diagnostics.Stopwatch]::StartNew()  
+          az --help > $null  
+          $sw.Stop()  
+          $elapsed = $sw.Elapsed.TotalSeconds  
+          Write-Host "First run execution time for az --help: $elapsed seconds"  
+          echo "elapsed=$elapsed" >> $env:GITHUB_OUTPUT  
+  
+  test-linux:  
+    name: Test Linux ${{ matrix.run }}  
+    runs-on: ubuntu-latest  
+    strategy:  
+      matrix:  
+        run: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]  
+    outputs:  
+      elapsed: ${{ steps.measure.outputs.elapsed }}  
+    steps:  
+      - name: Measure first run of az --help  
+        id: measure  
+        shell: pwsh  
+        run: |  
+          $sw = [System.Diagnostics.Stopwatch]::StartNew()  
+          az --help > $null  
+          $sw.Stop()  
+          $elapsed = $sw.Elapsed.TotalSeconds  
+          Write-Host "First run execution time for az --help: $elapsed seconds"  
+          echo "elapsed=$elapsed" >> $GITHUB_OUTPUT  
+
+          
+  test-macos:  
+    name: Test MacOS ${{ matrix.run }}  
+    runs-on: macos-latest  
+    strategy:  
+      matrix:  
+        run: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]  
+    outputs:  
+      elapsed: ${{ steps.measure.outputs.elapsed }}  
+    steps:  
+      - name: Measure first run of az --help  
+        id: measure  
+        shell: pwsh  
+        run: |  
+          $sw = [System.Diagnostics.Stopwatch]::StartNew()  
+          az --help > $null  
+          $sw.Stop()  
+          $elapsed = $sw.Elapsed.TotalSeconds  
+          Write-Host "First run execution time for az --help: $elapsed seconds"  
+          echo "elapsed=$elapsed" >> $GITHUB_OUTPUT  

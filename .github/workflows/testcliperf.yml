@@ -1,0 +1,46 @@
+name: Test az --help Performance  
+  
+on:  
+  workflow_dispatch:  
+  
+jobs:  
+  test-performance:  
+    strategy:  
+      matrix:  
+        os: [ubuntu-latest, windows-latest, macos-latest]  
+    runs-on: ${{ matrix.os }}  
+  
+    steps:  
+      - name: Measure az --help performance  
+        shell: pwsh  
+        run: |  
+          $sw = [System.Diagnostics.Stopwatch]::StartNew()  
+          az version
+          $sw.Stop()  
+          $elapsed = $sw.Elapsed.TotalSeconds  
+          Write-Host "First run execution time for az version: $elapsed seconds"  
+          $sw = [System.Diagnostics.Stopwatch]::StartNew()  
+          az --help > $null  
+          $sw.Stop()  
+          $elapsed = $sw.Elapsed.TotalSeconds  
+          Write-Host "First run execution time for az --help: $elapsed seconds"  
+          $times = @()  
+          for ($i = 1; $i -le 10; $i++) {  
+              $sw = [System.Diagnostics.Stopwatch]::StartNew()  
+              az --help > $null  
+              $sw.Stop()  
+              $elapsed = $sw.Elapsed.TotalSeconds  
+              $times += $elapsed  
+          }  
+          $average = ($times | Measure-Object -Average).Average  
+          Write-Host "Average execution time for az --help: ${average} seconds" 
+          $times = @()  
+          for ($i = 1; $i -le 10; $i++) {  
+              $sw = [System.Diagnostics.Stopwatch]::StartNew()  
+              az vm create --help > $null  
+              $sw.Stop()  
+              $elapsed = $sw.Elapsed.TotalSeconds  
+              $times += $elapsed  
+          }  
+          $average = ($times | Measure-Object -Average).Average  
+          Write-Host "Average execution time for az vm --help: ${average} seconds"
