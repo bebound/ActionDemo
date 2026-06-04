@@ -10,7 +10,7 @@ jobs:
       runs-on: ubuntu-latest
       steps:
       - name: Run Issue Sentinel
-        uses: bebound/issue-sentinel@test
+        uses: bebound/issue-sentinel@main
         with:
           enable-similar-issues-scanning: true # Scan similar issues in your repo, default: true
           enable-security-issues-scanning: true # Scan security issues in your repo, default: false
